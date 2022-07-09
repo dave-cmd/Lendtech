@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="main-wrapper">
+        <div class="left"></div>
+        <div class="center">
+
+            <div class="top-section">
+                <h3>hello</h3>
+                <h1>{{request.user.username}}</h1>
+            </div>
+
+            <div class="card">
+                <div>Loan Balance</div>
+                <div>KES {{loan}}</div>
+            </div>
+
+            <div>
+                <p>Recent Transactions</p>
+                <hr>
+            </div>
+            
+                {% for transaction in transactions %}
+                    <div class="feed-item">
+                        <div class="logo">F</div>
+                        <div>
+                            <div></div>
+                            <div>{{transaction.type}}</div>
+                        </div>
+                        <div>
+                            <div>{{transaction.amount}}</div>
+                            <div>{{transaction.created}}</div>
+                        </div>
+                    </div>
+                {% endfor %}
+            
+        </div>
+        <div class="right"></div>
+    </div>
+    
+{% endblock %}

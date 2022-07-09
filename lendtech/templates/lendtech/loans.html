@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="main-wrapper">
+        <div class="left"></div>
+        <div class="center">
+
+            <div class="top-section">
+                <h3>Transaction History</h3>
+            </div>
+            <div>
+                <form method="post" action="">
+                    {% csrf_token %}
+                    <input id="datepicker1" name="start">
+                    <input id="datepicker2" name="stop">
+                    <input type="submit" value="Filter">
+                </form>
+            </div>
+        </div>
+        <div class="right"></div>
+    </div>
+{% endblock %}

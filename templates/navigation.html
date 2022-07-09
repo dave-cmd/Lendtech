@@ -1,0 +1,19 @@
+<nav class="nav-wrapper">
+    <div class=""></div>
+    <div class="nav-center">
+        <h1><a href="{% url 'home' %}">LendTech</a></h1>
+        <ul>
+            <li><a href="{% url 'payments' %}">Payments</a></li>
+            <li><a href="{% url 'loans' %}">Loans</a></li>
+        </ul>
+    
+        <div class="auth">
+            {% if request.user.is_authenticated %}
+                <div><a href="{% url 'logout_page' %}">Logout</a></div>
+            {% else %}
+                <div><a href="{% url 'login_page' %}">Login</a></div>
+            {% endif %}
+        </div>
+    </div>
+    <div class=""></div>
+</nav>
