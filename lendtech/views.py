@@ -1,4 +1,4 @@
-from re import L
+
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib import messages
@@ -8,6 +8,7 @@ from django.contrib.auth.forms import UserCreationForm
 from . models import Transaction, MobileLoan, MobilePayment, BankLoan, BankPayment
 from . forms import DateRangeForm
 from itertools import chain
+from datetime import datetime
 
 # Create your views here
 
@@ -53,20 +54,28 @@ def payments(request):
 
 @login_required(login_url='login_page')
 def loans(request):
+
     context = { }
     if request.method == 'POST':
+
+            date_format = "%m/%d/%Y"
+
             mobile_payments = MobilePayment.objects.all().filter(created__range=[
-                request.POST.get('start'), request.POST.get('stop')]
+                datetime.strptime(request.POST.get('start'), date_format), 
+                datetime.strptime(request.POST.get('stop'), date_format)]
             ).filter(user__pk=request.user.id).all().order_by('-created')
 
+
             bank_payments = BankPayment.objects.all().filter(created__range=[
-                request.POST.get('start'), request.POST.get('stop')]
+                datetime.strptime(request.POST.get('start'), date_format), 
+                datetime.strptime(request.POST.get('stop'), date_format)]
             ).filter(user__pk=request.user.id).all().order_by('-created')
 
             context['transactions'] = list(chain(mobile_payments, bank_payments))
 
             print(context['transactions'])
     else:
+
         mobile_payments = MobilePayment.objects.all().filter(user__pk=request.user.id)
         bank_payments = BankPayment.objects.all().filter(user__pk=request.user.id)
         context['transactions'] = list(chain(mobile_payments, bank_payments))
