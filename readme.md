@@ -1,9 +1,9 @@
 
 
-#LendTech application
+# LendTech Challenge
 
 
-##Setup
+## Setup
 
 
 The first thing to do is to clone the repository:
@@ -41,7 +41,7 @@ And navigate to http://127.0.0.1:8000/
 
 
 
-##Walkthrough
+## Walkthrough
 
 
 http://127.0.0.1:8000/admin can is accessible through [username: 'kanjuru'] && [password: 'root'].
