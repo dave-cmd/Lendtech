@@ -44,5 +44,5 @@ And navigate to http://127.0.0.1:8000/
 ## Walkthrough
 
 
-http://127.0.0.1:8000/admin can is accessible through [username: 'kanjuru'] && [password: 'root'].
+http://127.0.0.1:8000/admin is accessible through [username: 'kanjuru'] && [password: 'root'].
 
