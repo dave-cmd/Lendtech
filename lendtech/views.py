@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from . models import Transaction, MobileLoan, MobilePayment, BankLoan, BankPayment
 from . forms import DateRangeForm
+from itertools import chain
 
 # Create your views here
 
@@ -49,18 +50,30 @@ def payments(request):
 
 
 
+
 @login_required(login_url='login_page')
 def loans(request):
-
-    form  = DateRangeForm()
+    context = { }
     if request.method == 'POST':
-        form  = DateRangeForm(request.POST)
-        
-        if form.is_valid():
-            pass
+            mobile_payments = MobilePayment.objects.all().filter(created__range=[
+                request.POST.get('start'), request.POST.get('stop')]
+            ).filter(user__pk=request.user.id).all().order_by('-created')
 
-    context = {'form':form}
+            bank_payments = BankPayment.objects.all().filter(created__range=[
+                request.POST.get('start'), request.POST.get('stop')]
+            ).filter(user__pk=request.user.id).all().order_by('-created')
+
+            context['transactions'] = list(chain(mobile_payments, bank_payments))
+
+            print(context['transactions'])
+    else:
+        mobile_payments = MobilePayment.objects.all().filter(user__pk=request.user.id)
+        bank_payments = BankPayment.objects.all().filter(user__pk=request.user.id)
+        context['transactions'] = list(chain(mobile_payments, bank_payments))
+    
     return render(request, 'lendtech/loans.html', context=context)
+
+
 
 
 def login_page(request):
@@ -88,10 +101,14 @@ def login_page(request):
     return render(request, 'lendtech/login_register.html', context)
 
 
+
+
 @login_required(login_url='login_page')
 def logout_page(request):
     logout(request)
     return redirect('home')
+    
+
 
 def register_page(request):
     if request.user.is_authenticated:

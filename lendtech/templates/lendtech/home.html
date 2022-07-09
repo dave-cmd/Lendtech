@@ -19,19 +19,7 @@
                 <hr>
             </div>
             
-                {% for transaction in transactions %}
-                    <div class="feed-item">
-                        <div class="logo">F</div>
-                        <div>
-                            <div></div>
-                            <div>{{transaction.type}}</div>
-                        </div>
-                        <div>
-                            <div>{{transaction.amount}}</div>
-                            <div>{{transaction.created}}</div>
-                        </div>
-                    </div>
-                {% endfor %}
+            {% include 'lendtech/feed_component.html' %}
             
         </div>
         <div class="right"></div>
