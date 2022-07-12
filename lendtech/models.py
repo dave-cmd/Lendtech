@@ -1,6 +1,9 @@
+from operator import pos
 import uuid
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 # Create your models here.
 
@@ -27,8 +30,13 @@ class Transaction(models.Model):
         max_length=300,
         choices=[('BANK', 'BANK'),('MOBILE', 'MOBILE')]
         )
+    catergory = models.CharField(
+        max_length=300,
+        choices=[('PAYMENT', 'PAYMENT'),('LOAN', 'LOAN')],
+        null=True
+        )
     updated = models.DateTimeField(auto_now=True)
-    created = models.DateTimeField(auto_now_add=True)
+    created = models.DateTimeField(auto_now_add=True)        
 
 
     def __str__(self):
@@ -47,14 +55,7 @@ class BankLoan(models.Model):
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
     
-    # transaction = Transaction.objects.create(
-    # account = self.account,
-    # info = self.bank_name,
-    # unique_identifier = self.bank_account_number,
-    # type = "BANK",
-    # amount = self.amount,
-    #     )
-    # transaction.save()
+
     def __str__(self):
         return self.bank_name
 
@@ -108,8 +109,85 @@ class MobilePayment(models.Model):
 
 
 
-
 # Form model
 
 class FormModel(models.Model):
     date = models.DateField()
+
+
+
+
+# Signals
+# Loans
+
+@receiver(post_save, sender=BankLoan)
+def transaction_creation_handler(*args, **kwargs):
+    if kwargs['created']:
+            transaction = Transaction.objects.create(
+            info = kwargs['instance'].bank_name,
+            unique_identifier = kwargs['instance'].bank_account_number,
+            type = "BANK",
+            amount = kwargs['instance'].amount,
+            user = kwargs['instance'].user,
+            catergory = 'LOAN',
+                )
+            transaction.save()
+            print(f"{kwargs['instance']} transaction successfully created...")
+#post_save.connect(transaction_creation_handler, sender=BankLoan)
+
+
+
+@receiver(post_save, sender=MobileLoan)
+def transaction_creation_handler(*args, **kwargs):
+    if kwargs['created']:
+            transaction = Transaction.objects.create(
+            info = f"{kwargs['instance'].fname} {kwargs['instance'].lname}",
+            unique_identifier = kwargs['instance'].phone_number,
+            type = "MOBILE",
+            amount = kwargs['instance'].amount,
+            user = kwargs['instance'].user,
+            catergory = 'LOAN',
+                )
+            transaction.save()
+
+            print(f"{kwargs['instance']} transaction successfully created...")
+#post_save.connect(transaction_creation_handler, sender=MobileLoan)
+
+
+
+# Signals 
+# Payments
+
+@receiver(post_save, sender=BankPayment)
+def transaction_creation_handler(*args, **kwargs):
+    if kwargs['created']:
+            transaction = Transaction.objects.create(
+            #info = kwargs['instance'].bank_name,
+            #unique_identifier = kwargs['instance'].bank_account_number,
+            type = "BANK",
+            amount = kwargs['instance'].amount,
+            user = kwargs['instance'].user,
+            catergory = 'PAYMENT'
+                )
+            transaction.save()
+
+            print(f"{kwargs['instance']} transaction successfully created...")
+#post_save.connect(transaction_creation_handler, sender=BankPayment)
+
+
+
+@receiver(post_save, sender=MobilePayment)
+def transaction_creation_handler(*args, **kwargs):
+    if kwargs['created']:
+            transaction = Transaction.objects.create(
+            #info = f"{kwargs['instance'].fname} {kwargs['instance'].lname}",
+            #unique_identifier = kwargs['instance'].phone_number,
+            type = "MOBILE",
+            amount = kwargs['instance'].amount,
+            user = kwargs['instance'].user,
+            catergory = 'PAYMENT',
+                )
+            transaction.save()
+
+            print(f"{kwargs['instance']} transaction successfully created...")
+#post_save.connect(transaction_creation_handler, sender=MobilePayment)
