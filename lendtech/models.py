@@ -30,7 +30,7 @@ class Transaction(models.Model):
         max_length=300,
         choices=[('BANK', 'BANK'),('MOBILE', 'MOBILE')]
         )
-    catergory = models.CharField(
+    category = models.CharField(
         max_length=300,
         choices=[('PAYMENT', 'PAYMENT'),('LOAN', 'LOAN')],
         null=True
@@ -122,7 +122,7 @@ class FormModel(models.Model):
 
 @receiver(post_save, sender=BankLoan)
 def transaction_creation_handler(*args, **kwargs):
-    
+
     if kwargs['created']:
             transaction = Transaction.objects.create(
             info = kwargs['instance'].bank_name,
