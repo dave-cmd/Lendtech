@@ -73,7 +73,7 @@ def loans(request):
 
             # context['transactions'] = list(chain(mobile_loans, bank_loans))
 
-            context['transactions'] = Transaction.objects.all().filter(category='LOAN').filter(created__range=[
+            context['transactions'] = Transaction.objects.all().filter(user=request.user).filter(category='LOAN').filter(created__range=[
                 datetime.strptime(request.POST.get('start'), date_format), 
                 datetime.strptime(request.POST.get('stop'), date_format)]
             ).filter(user__pk=request.user.id).all().order_by('-created')
@@ -84,7 +84,7 @@ def loans(request):
         # bank_loans = BankLoan.objects.all().filter(user__pk=request.user.id)
         # context['transactions'] = list(chain(mobile_loans, bank_loans))
 
-        context['transactions'] = Transaction.objects.all().filter(category='LOAN')
+        context['transactions'] = Transaction.objects.all().filter(category='LOAN').filter(user=request.user)
         #[print(i.category) for i in context['transactions']]
     
     return render(request, 'lendtech/loans.html', context=context)
