@@ -14,10 +14,10 @@ from datetime import datetime
 
 @login_required(login_url='login_page')
 def home(request):
-    mobile_payments = MobilePayment.objects.filter(user__pk=request.user.id).all()
-    mobile_loans = MobileLoan.objects.all().filter(user__pk=request.user.id)
-    bank_payments = BankPayment.objects.all().filter(user__pk=request.user.id)
-    bank_loans = BankLoan.objects.all().filter(user__pk=request.user.id)
+    mobile_payments = MobilePayment.objects.filter(user__pk=request.user.id).all().filter(user=request.user)
+    mobile_loans = MobileLoan.objects.all().filter(user__pk=request.user.id).filter(user=request.user)
+    bank_payments = BankPayment.objects.all().filter(user__pk=request.user.id).filter(user=request.user)
+    bank_loans = BankLoan.objects.all().filter(user__pk=request.user.id).filter(user=request.user)
     
     loans, payments, totals = 0,0,0
 
@@ -37,7 +37,7 @@ def home(request):
         loans += item.amount
 
     outstanding_loan = loans - payments
-    transactions = Transaction.objects.all()
+    transactions = Transaction.objects.all().filter(user=request.user)
 
     context = {'transactions': transactions, 'loan': outstanding_loan}
     return render(request, 'lendtech/home.html', context=context)
