@@ -60,25 +60,32 @@ def loans(request):
 
             date_format = "%m/%d/%Y"
 
-            mobile_payments = MobilePayment.objects.all().filter(created__range=[
+            # mobile_loans = MobileLoan.objects.all().filter(created__range=[
+            #     datetime.strptime(request.POST.get('start'), date_format), 
+            #     datetime.strptime(request.POST.get('stop'), date_format)]
+            # ).filter(user__pk=request.user.id).all().order_by('-created')
+
+
+            # bank_loans = BankLoan.objects.all().filter(created__range=[
+            #     datetime.strptime(request.POST.get('start'), date_format), 
+            #     datetime.strptime(request.POST.get('stop'), date_format)]
+            # ).filter(user__pk=request.user.id).all().order_by('-created')
+
+            # context['transactions'] = list(chain(mobile_loans, bank_loans))
+
+            context['transactions'] = Transaction.objects.all().filter(category='LOAN').filter(created__range=[
                 datetime.strptime(request.POST.get('start'), date_format), 
                 datetime.strptime(request.POST.get('stop'), date_format)]
             ).filter(user__pk=request.user.id).all().order_by('-created')
 
-
-            bank_payments = BankPayment.objects.all().filter(created__range=[
-                datetime.strptime(request.POST.get('start'), date_format), 
-                datetime.strptime(request.POST.get('stop'), date_format)]
-            ).filter(user__pk=request.user.id).all().order_by('-created')
-
-            context['transactions'] = list(chain(mobile_payments, bank_payments))
-
-            print(context['transactions'])
     else:
 
-        mobile_payments = MobilePayment.objects.all().filter(user__pk=request.user.id)
-        bank_payments = BankPayment.objects.all().filter(user__pk=request.user.id)
-        context['transactions'] = list(chain(mobile_payments, bank_payments))
+        # mobile_loans = MobileLoan.objects.all().filter(user__pk=request.user.id)
+        # bank_loans = BankLoan.objects.all().filter(user__pk=request.user.id)
+        # context['transactions'] = list(chain(mobile_loans, bank_loans))
+
+        context['transactions'] = Transaction.objects.all().filter(category='LOAN')
+        #[print(i.category) for i in context['transactions']]
     
     return render(request, 'lendtech/loans.html', context=context)
 
