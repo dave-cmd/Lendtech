@@ -3,12 +3,20 @@
         <div class="feed-item">
             <div class="logo">F</div>
             <div>
-                <div></div>
-                <div>{{transaction.type}}</div>
+                <div>From: {{transaction.info}}</div>
+                <div>{{transaction.type}}: {{transaction.unique_identifier}}</div>
             </div>
             <div>
-                <div>{{transaction.amount}}</div>
+                <div>
+                    {% if transaction.category == 'LOAN' %}
+                        <span>+</span>
+                    {% else %}
+                        <span>-</span>
+                    {% endif %}
+                    {{transaction.amount}}
+                </div>
                 <div>{{transaction.created}}</div>
             </div>
         </div>
     {% endfor %}
+
