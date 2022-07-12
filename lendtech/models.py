@@ -1,3 +1,4 @@
+from operator import pos
 import uuid
 from django.db import models
 from django.contrib.auth.models import User
@@ -121,6 +122,7 @@ class FormModel(models.Model):
 
 @receiver(post_save, sender=BankLoan)
 def transaction_creation_handler(*args, **kwargs):
+    
     if kwargs['created']:
             transaction = Transaction.objects.create(
             info = kwargs['instance'].bank_name,
@@ -138,6 +140,7 @@ def transaction_creation_handler(*args, **kwargs):
 
 @receiver(post_save, sender=MobileLoan)
 def transaction_creation_handler(*args, **kwargs):
+
     if kwargs['created']:
             transaction = Transaction.objects.create(
             info = f"{kwargs['instance'].fname} {kwargs['instance'].lname}",
@@ -159,10 +162,11 @@ def transaction_creation_handler(*args, **kwargs):
 
 @receiver(post_save, sender=BankPayment)
 def transaction_creation_handler(*args, **kwargs):
+
     if kwargs['created']:
             transaction = Transaction.objects.create(
-            #info = kwargs['instance'].bank_name,
-            #unique_identifier = kwargs['instance'].bank_account_number,
+            info = kwargs['instance'].payment.bank_name,
+            unique_identifier = kwargs['instance'].payment.bank_account_number,
             type = "BANK",
             amount = kwargs['instance'].amount,
             user = kwargs['instance'].user,
@@ -177,10 +181,11 @@ def transaction_creation_handler(*args, **kwargs):
 
 @receiver(post_save, sender=MobilePayment)
 def transaction_creation_handler(*args, **kwargs):
+
     if kwargs['created']:
             transaction = Transaction.objects.create(
-            #info = f"{kwargs['instance'].fname} {kwargs['instance'].lname}",
-            #unique_identifier = kwargs['instance'].phone_number,
+            info = f"{kwargs['instance'].payment.fname} {kwargs['instance'].payment.lname}",
+            unique_identifier = kwargs['instance'].payment.phone_number,
             type = "MOBILE",
             amount = kwargs['instance'].amount,
             user = kwargs['instance'].user,
