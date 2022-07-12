@@ -43,6 +43,15 @@ And navigate to http://127.0.0.1:8000/
 
 ## Walkthrough
 
+Run the following commands to create a sqlite database in the working directory
 
-http://127.0.0.1:8000/admin is accessible through [username: 'kanjuru'] && [password: 'root'].
+```sh
+(venv) $ python3 manage.py createsuperuser  
+(venv) $ python3 manage.py makemigrations
+(venv) $ python3 manage.py migrate
+```
+
+Access the admin panel with the credentilas created with the [createsuperuser ] command 
+http://127.0.0.1:8000/admin
+
 
